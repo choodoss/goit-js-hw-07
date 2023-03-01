@@ -22,16 +22,18 @@ const addGalleryItems = galleryItems.map((img, i) => {
 
     return galleryItem;
 });
+//
 galleryEl.append(...addGalleryItems);
-let instance;
+let instance;//щоб працювала closeImage(e).
 
 galleryEl.addEventListener('click', (e) => {
     e.preventDefault()
-    window.addEventListener('keydown', closeImage)
+    window.addEventListener('keydown', closeImage)//закриття через кнопки
     if (e.target.classList.value === 'gallery__image') {
         instance = basicLightbox.create(`<img src=${e.target.dataset.source} width="1280" height="852">`);
         return instance.show();
     }
+    //додав фокус та ховер на посилання, його немає бути на картинці!
     instance = basicLightbox.create(`<img src=${e.target.firstElementChild.dataset.source} width="1280" height="852">`);
     instance.show();
 });

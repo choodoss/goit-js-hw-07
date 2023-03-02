@@ -13,6 +13,7 @@ function hendleOpenImage(e) {
     if (e.target.className !== 'gallery__image') { return; }
 
     instance = basicLightbox.create(`<img src="${e.target.dataset.source}" width="1280" height="852">`, {
+        //довелося подивитися підказку, у SimpleLightbox був хоч і не дуже гарний але все ж приклад куди додавати опції $('.some-element a').simpleLightbox({ /* options */}); а тут взагалі не зроміло було(( прикро що вони не дають розшрений приклад роботи із всіма опціями щоб можна було погратись і видалити зайве, видаляти - не писати))
         onShow: () => { window.addEventListener('keydown', hendlecloseImage); },
         onClose: () => { window.removeEventListener('keydown', hendlecloseImage); },
     });

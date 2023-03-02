@@ -2,45 +2,25 @@ import { galleryItems } from './gallery-items.js';
 
 const galleryEl = document.querySelector('.gallery');
 
-// вирішив попрактивуватись у створенні елементів, можу зробити і шаблонним рядком (по лінивому)) 
-const addGalleryItems = galleryItems.map((img, i) => {
-    const galleryItem = document.createElement('div');
-    galleryItem.classList.add('gallery__item');
+const addGalleryItems = galleryItems.map(({ preview, original, description }) => `<div class="gallery__item"><a class="gallery__link" href="${original}"><img class="gallery__image" src="${preview}" data-source="${original}" alt="${description}"/></a></div>`).join('');
 
-    const galleryLink = document.createElement('a');
-    galleryLink.classList.add('gallery__link');
-    galleryLink.href = "large-image.jpg";
+galleryEl.insertAdjacentHTML('beforeend', addGalleryItems);
+let instance;
 
-    const galleryImage = document.createElement('img');
-    galleryImage.classList.add('gallery__image');
-    galleryImage.setAttribute('data-source', `${galleryItems[i].original}`);
-    galleryImage.src = `${galleryItems[i].preview}`;
-    galleryImage.alt = `${galleryItems[i].description}`;
+galleryEl.addEventListener('click', hendleOpenImage);
+function hendleOpenImage(e) {
+    e.preventDefault();
+    if (e.target.className !== 'gallery__image') { return; }
 
-    galleryLink.append(galleryImage);
-    galleryItem.append(galleryLink);
-
-    return galleryItem;
-});
-//
-galleryEl.append(...addGalleryItems);
-let instance;//щоб працювала closeImage(e).
-
-galleryEl.addEventListener('click', (e) => {
-    e.preventDefault()
-    window.addEventListener('keydown', closeImage)//закриття через кнопки
-    if (e.target.classList.value === 'gallery__image') {
-        instance = basicLightbox.create(`<img src=${e.target.dataset.source} width="1280" height="852">`);
-        return instance.show();
-    }
-    //додав фокус та ховер на посилання, його немає бути на картинці!
-    instance = basicLightbox.create(`<img src=${e.target.firstElementChild.dataset.source} width="1280" height="852">`);
+    instance = basicLightbox.create(`<img src="${e.target.dataset.source}" width="1280" height="852">`, {
+        onShow: () => { window.addEventListener('keydown', hendlecloseImage); },
+        onClose: () => { window.removeEventListener('keydown', hendlecloseImage); },
+    });
     instance.show();
-});
+}
 
-function closeImage(e) {
-    if (e.code === 'Escape' || e.code === 'Space' || e.code === 'Enter') {
+function hendlecloseImage(e) {
+    if (e.code === 'Escape') {
         instance.close();
-    };
+    }
 };
-
